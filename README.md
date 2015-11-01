@@ -175,6 +175,10 @@ sh /jffs/iptables_command.sh
 
 `Asus Merlin` 中内置了 dnsmasq，可以用来指定特定的域名走特定的 DNS 服务器进行解析。所以剩下的问题是如何区分国内和国外的域名。
 
+TL;DR: 下载 [`config/dnsmasq-conf`][dnsmasq-conf-files] 中的两个文件，然后跳到这一节最后部分。
+
+---
+
 我使用的 [dnsmasq-china-list][dnsmasq-china-list] 提供的中国网站列表。
 
 dnsmasq-china-list 项目提供了三个 `dnsmasq` 的配置文件：
@@ -215,6 +219,7 @@ cp ./foreign-domains.conf /jffs/dnsmasq-conf
 echo conf-dir=/jffs/dnsmasq-conf > /jffs/configs/dnsmasq.conf.add
 ```
 
+[dnsmasq-conf-files]: https://github.com/onlyice/asus-merlin-cross-the-gfw/tree/master/config/dnsmasq-conf
 [dnsmasq-china-list]: https://github.com/felixonmars/dnsmasq-china-list
 [custom-config-files]: https://github.com/RMerl/asuswrt-merlin/wiki/Custom-config-files
 
