@@ -153,13 +153,15 @@ iptables -t nat -I PREROUTING -p tcp -j SHADOWSOCKS
 
 现在我们需要让这个文件在合适的时机被执行。我观察到 Asus Merlin 会在使用 PPPoE 跟运营商认证通过后（也就是平时说到的拨号上网过程），将 iptables 刷新。因此这个文件的运行时机应该是路由拨号过程完毕。
 
-观察到深圳电信每一天会使你的 PPP 会话中断，即路由每一天会重新做一次拨号。看了下 Asus Merlin 的 [Custom config files][custom-config-files]，似乎只有 `ddns-start` 事件适合这个场景。DDNS 即 Dynamic DNS，如果你使用了 Asus Merlin 提供的 DDNS 服务，路由器每次从运营商拿到新 IP 时，它会将这个新 IP 注册到 DDNS 服务器上，注册完后运行 `ddns-start` 脚本。因此，新建 `/jffs/scripts/ddns-start` 文件，写入：
+观察到深圳电信每一天会使你的 PPP 会话中断，即路由每一天会重新做一次拨号。而拨完号后有似乎有一些路由内置的功能会刷新 iptables，导致你自己注入的 iptables 被清除。看了下 Asus Merlin 的 [Custom config files][custom-config-files]，似乎只有 `ddns-start` 事件适合这个场景。DDNS 即 Dynamic DNS，如果你使用了 Asus Merlin 提供的 DDNS 服务，路由器每次从运营商拿到新 IP 时，它会将这个新 IP 注册到 DDNS 服务器上，注册完后运行 `ddns-start` 脚本。因此，新建 `/jffs/scripts/ddns-start` 文件，写入：
 
 ```bash
 #!/bin/sh
 
 sh /jffs/iptables_command.sh
 ```
+
+Update: 如果你开启了 QOS 功能，Asus Merlin 会把 iptable 中某些表清除掉。可以把 `ddns-start` 文件换成 `qos-start` 来解决。
 
 这个时候，我们区分国内外流量的事情就做完了。你应该重启下路由，然后试着在你的电脑上访问一个被墙的 IP 的网站服务，比如 Google 的 [`http://74.125.239.144`][google-website]，观察能否正常连上。
 
